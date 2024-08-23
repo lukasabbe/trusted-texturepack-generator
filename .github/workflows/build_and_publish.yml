@@ -24,7 +24,8 @@ jobs:
             - name: install zip
               uses: montudor/action-zip@v1
             - name: run zip
-              run: zip -qq -r skin-pack.zip ./skin-pack/assets ./skin-pack/pack.mcmeta ./skin-pack/pack.png
+              run: zip -qq -r ../skin-pack.zip *
+              working-directory: ./skin-pack/
             - uses: Kir-Antipov/mc-publish@v3.3
               with:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
