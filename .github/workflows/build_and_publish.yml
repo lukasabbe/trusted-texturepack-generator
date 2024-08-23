@@ -21,10 +21,11 @@ jobs:
                 BANNED_PLAYERS_LINK: ${{ secrets.BANNED_PLAYERS_LINK }}
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
               run: node index.js
-            - name: Zip file
+            - name: install zip
               uses: montudor/action-zip@v1
-              with:
-                args: zip -qq -r skin-pack.zip skin-pack/assets skin-pack/pack.mcmeta skin-pack/pack.png
+            - name: run zip
+              run: zip -qq -r skin-pack.zip assets pack.mcmeta pack.png
+              working-directory: /skinpack/
             - uses: Kir-Antipov/mc-publish@v3.3
               with:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
