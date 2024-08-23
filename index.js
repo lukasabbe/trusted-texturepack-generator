@@ -10,7 +10,6 @@ async function main() {
     let banned_spelare = await get_banned_players();
     banned_spelare = JSON.parse(banned_spelare);
     path = make_pack()
-    console.log(banned_spelare);
     for(let i = 0; i < trusted_spelare.length; i++){
         let namn = trusted_spelare[i].name.toLowerCase();
         console.clear();
