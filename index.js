@@ -1,5 +1,4 @@
-const fetch = (...args) =>
-    import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const fetch = require('node-fetch');
 const fs = require("fs");
 var size_of = require('image-size');
 require('dotenv').config();
