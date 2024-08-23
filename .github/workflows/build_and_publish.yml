@@ -30,5 +30,9 @@ jobs:
                 name: Trusted pack
                 version: 1.0+1.20.4
                 files: skin-pack.zip
+                version-type: release
+                loaders: minecraft
+                game-versions: |
+                    ["1.20.4","1.20.3")
                 dependencies: cit-resewn@1.1.5+1.20.4(required)
             
