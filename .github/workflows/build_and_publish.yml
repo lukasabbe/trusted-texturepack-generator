@@ -21,18 +21,13 @@ jobs:
                 BANNED_PLAYERS_LINK: ${{ secrets.BANNED_PLAYERS_LINK }}
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
               run: node index.js
-            - name: install zip
-              uses: montudor/action-zip@v1
-            - name: run zip
-              run: zip -qq -r skin-pack.zip assets pack.mcmeta pack.png
-              working-directory: ./skin-pack/
             - uses: Kir-Antipov/mc-publish@v3.3
               with:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
                 modrinth-id: ${{ secrets.MODRINTH_ID }}
                 name: Trusted pack
                 version: 1.0+1.20.4
-                files: /skin-pack/skin-pack.zip
+                files: ./skin-pack
                 version-type: release
                 loaders: minecraft
                 game-versions: |
