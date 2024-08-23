@@ -24,7 +24,7 @@ jobs:
             - name: Zip file
               uses: montudor/action-zip@v1
               with:
-                args: zip -r skin-pack.zip skin-pack
+                args: zip -qq -r skin-pack.zip skin-pack/assets skin-pack/pack.mcmeta skin-pack/pack.png
             - uses: Kir-Antipov/mc-publish@v3.3
               with:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
