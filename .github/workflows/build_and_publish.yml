@@ -1,0 +1,32 @@
+name: publish on modrinth
+on: [workflow_dispatch]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Set up node JS
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20.x'
+            - name: Install dependencies
+              run: npm install
+            - name: Build
+              env: 
+                WHITELIST_LINK: ${{ secrets.WHITELIST_LINK }}
+                BANNED_PLAYERS_LINK: ${{ secrets.WHITELIST_LINK }}
+                MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+              run: node index.js
+            - name: Zip file
+              uses: montudor/action-zip@v1
+              with:
+                args: zip -r skin-pack.zip skin-pack
+            - uses: Kir-Antipov/mc-publish@v3.3
+              with:
+                modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+                modrinth-id: ${{ secrets.MODRINTH_ID }}
+                files: skin-pack.zip
+                dependencies: cit-resewn@1.1.5+1.20.4(required)
+            
