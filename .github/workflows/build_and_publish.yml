@@ -32,7 +32,7 @@ jobs:
                 modrinth-id: ${{ secrets.MODRINTH_ID }}
                 name: Trusted pack
                 version: 1.0+1.20.4
-                files: /skin-pack.zip
+                files: skin-pack.zip
                 version-type: release
                 loaders: minecraft
                 game-versions: |
