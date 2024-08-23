@@ -34,10 +34,8 @@ jobs:
                 files: skin-pack.zip
                 version-type: release
                 loaders: minecraft
-                game-versions: | 
-                    >=1.20.4 <=1.20.3
-                modrinth-game-versions: |
-                    >=1.20.4 <=1.20.3
-                game-version-filter: none
+                game-versions: 1.20.4
+                modrinth-game-versions: 1.20.4
+                game-version-filter: releases
                 dependencies: cit-resewn@1.1.5+1.20.4(required)
             
