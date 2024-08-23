@@ -16,7 +16,7 @@ jobs:
             - name: Build
               env: 
                 WHITELIST_LINK: ${{ secrets.WHITELIST_LINK }}
-                BANNED_PLAYERS_LINK: ${{ secrets.WHITELIST_LINK }}
+                BANNED_PLAYERS_LINK: ${{ secrets.BANNED_PLAYERS_LINK }}
                 MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
               run: node index.js
             - name: Zip file

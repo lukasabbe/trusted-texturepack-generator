@@ -14,13 +14,13 @@ async function main() {
     for(let i = 0; i < trusted_spelare.length; i++){
         let namn = trusted_spelare[i].name.toLowerCase();
         console.clear();
-        console.log("Going thru all players in list, it will take a longer time because not being rate limited")
-        console.log(`Current player: ${namn} - ${i}/${trusted_spelare.length}}`)
         if(banned_spelare.find(element => element.uuid == trusted_spelare[i].uuid) != undefined){
             console.log("This person is banned")
             await wait(500)
             continue;
         }
+        console.log("Going thru all players in list, it will take a longer time because not being rate limited")
+        console.log(`Current player: ${namn} - ${i}/${trusted_spelare.length}}`)
         let data = await getSkin(trusted_spelare[i].uuid, namn);
         if(data == null) continue;
         let properties = "";
