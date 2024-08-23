@@ -108,7 +108,6 @@ function make_pack(){
 
 function get_whitelist(){
     return new Promise((resolve, reject) =>{
-        console.log(process.env.WHITELIST_LINK);
         fetch(process.env.WHITELIST_LINK).then(async t =>{
             t.blob().then(async blob =>{
                 resolve(await blob.text());
