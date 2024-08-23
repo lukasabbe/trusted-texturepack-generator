@@ -27,6 +27,8 @@ jobs:
               with:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
                 modrinth-id: ${{ secrets.MODRINTH_ID }}
+                name: Trusted pack
+                version: 1.0+1.20.4
                 files: skin-pack.zip
                 dependencies: cit-resewn@1.1.5+1.20.4(required)
             
