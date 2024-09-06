@@ -24,12 +24,13 @@ async function main() {
         if(data == null) continue;
         let properties = "";
         if(data[0] == "slim")
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=slim.json\ntexture=${data[1]}.png\nnbt.display.Name=ipattern:${data[1]}`
+            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_slim.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
         else if(data[0] == "wierd")
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=wierd_text.json\ntexture=${data[1]}.png\nnbt.display.Name=ipattern:${data[1]}`
+            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_old.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
         else
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=normal.json\ntexture=${data[1]}.png\nnbt.display.Name=ipattern:${data[1]}`
+            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_normal.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
         fs.writeFileSync(`.${path}/player-${i}.properties`,properties)
+        copyJsonFile(data[0], data[1])
         await wait(500)
     }
 }
@@ -90,7 +91,7 @@ function make_pack(){
     fs.mkdirSync("./skin-pack");
     let pack_mcmeta = {
         "pack":{
-            "pack_format":32,
+            "pack_format":34,
             "description":"Skin pack\nMade by Lukasabbe"
         }
     }
@@ -100,11 +101,34 @@ function make_pack(){
     fs.mkdirSync("./skin-pack/assets/minecraft/optifine");
     fs.mkdirSync("./skin-pack/assets/minecraft/optifine/cit");
     fs.mkdirSync("./skin-pack/assets/minecraft/optifine/cit/skins");
-    fs.copyFileSync("slim.json","./skin-pack/assets/minecraft/optifine/cit/skins/slim.json")
-    fs.copyFileSync("normal.json","./skin-pack/assets/minecraft/optifine/cit/skins/normal.json")
-    fs.copyFileSync("wierd_text.json","./skin-pack/assets/minecraft/optifine/cit/skins/wierd_text.json")
     return "/skin-pack/assets/minecraft/optifine/cit/skins"
 }
+
+function copyJsonFile(format, username){
+    switch(format){
+        case "slim":
+            fs.copyFileSync("slim.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json")
+            let file = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json");
+            file = file.toString().replace("player", username)
+            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json", file)
+            break;
+        case "normal":
+            fs.copyFileSync("normal.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json")
+            let file2 = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json");
+            file2 = file2.toString().replace("player", username)
+            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json", file2)
+            break;
+        case "wierd":
+            fs.copyFileSync("old.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json")
+            let file3 = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json");
+            file3 = file3.toString().replace("player", username)
+            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json", file3)
+            break
+
+    }
+
+}
+
 
 function get_whitelist(){
     return new Promise((resolve, reject) =>{
