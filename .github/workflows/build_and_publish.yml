@@ -31,12 +31,12 @@ jobs:
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
                 modrinth-id: ${{ secrets.MODRINTH_ID }}
                 name: Trusted pack
-                version: 1.0+1.20.4
+                version: 1.0+1.21
                 files: skin-pack.zip
                 version-type: release
                 loaders: minecraft
                 game-versions: |
-                    >=1.20.3 <=1.20.4
+                    >=1.21 <=1.21.1
                 game-version-filter: releases
                 dependencies: cit-resewn@1.1.5+1.20.4(required)
             
