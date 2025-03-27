@@ -2,14 +2,25 @@ const fetch = require('node-fetch');
 const fs = require("fs");
 var size_of = require('image-size');
 require('dotenv').config();
-var path = "";
 
 async function main() {
     let trusted_spelare = await get_whitelist();
     trusted_spelare = JSON.parse(trusted_spelare);
     let banned_spelare = await get_banned_players();
     banned_spelare = JSON.parse(banned_spelare);
-    path = make_pack()
+    make_pack()
+    const carved_pumpkin_item_obj = {
+        model : {
+            type : "minecraft:select",
+            property : "minecraft:component",
+            component :  "minecraft:custom_name",
+            cases : [],
+            fallback : {
+                type : "minecraft:model",
+                model: "minecraft:block/carved_pumpkin"
+            }
+        }
+    }
     for(let i = 0; i < trusted_spelare.length; i++){
         let namn = trusted_spelare[i].name.toLowerCase();
         console.clear();
@@ -23,16 +34,17 @@ async function main() {
         let data = await getSkin(trusted_spelare[i].uuid, namn);
         if(data == null) continue;
         let properties = "";
-        if(data[0] == "slim")
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_slim.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
-        else if(data[0] == "wierd")
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_old.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
-        else
-            properties = `type=item\nmatchItems=minecraft:carved_pumpkin\nmodel=${data[1]}_normal.json\ncomponents.minecraft\\:custom_name=ipattern:${data[1]}`
-        fs.writeFileSync(`.${path}/player-${i}.properties`,properties)
+        carved_pumpkin_item_obj.model.cases.push({
+            when: data[1],
+            model: {
+                type: "minecraft:model",
+                model: `trusted_skin_pack:item/${data[1]}`
+            }
+        })
         copyJsonFile(data[0], data[1])
         await wait(500)
     }
+    fs.writeFileSync("./skin-pack/assets/minecraft/items/carved_pumpkin.json", JSON.stringify(carved_pumpkin_item_obj))
 }
 
 function getSkin(uuid, name){
@@ -46,7 +58,7 @@ function getSkin(uuid, name){
             let wierd = await saveSkin(data.textures.SKIN.url, data.profileName.toLowerCase())
 
             if(wierd == "wiredTexture")
-                resolve(["wierd", data.profileName.toLowerCase()])
+                resolve(["old", data.profileName.toLowerCase()])
 
             else if(data.textures.SKIN.metadata == undefined){
                 resolve(["normal", data.profileName.toLowerCase()])
@@ -63,9 +75,10 @@ function saveSkin(link,name){
         fetch(link,{
             method: 'GET'
         }).then(async t =>{
-            let stream = t.body.pipe(fs.createWriteStream(`.${path}/${name}.png`))
+            const path = "./skin-pack/assets/trusted_skin_pack/textures/item/";
+            let stream = t.body.pipe(fs.createWriteStream(`${path}/${name}.png`))
             stream.on('finish', () => {
-                size_of(`.${path}/${name}.png`, function (err, dim){
+                size_of(`${path}/${name}.png`, function (err, dim){
                     if(dim.height == 32){
                         resolve("wiredTexture")
                     }
@@ -91,42 +104,27 @@ function make_pack(){
     fs.mkdirSync("./skin-pack");
     let pack_mcmeta = {
         "pack":{
-            "pack_format":34,
+            "pack_format":55,
             "description":"Skin pack\nMade by Lukasabbe"
         }
     }
     fs.writeFileSync("./skin-pack/pack.mcmeta", JSON.stringify(pack_mcmeta));
     fs.mkdirSync("./skin-pack/assets");
     fs.mkdirSync("./skin-pack/assets/minecraft");
-    fs.mkdirSync("./skin-pack/assets/minecraft/optifine");
-    fs.mkdirSync("./skin-pack/assets/minecraft/optifine/cit");
-    fs.mkdirSync("./skin-pack/assets/minecraft/optifine/cit/skins");
-    return "/skin-pack/assets/minecraft/optifine/cit/skins"
+    fs.mkdirSync("./skin-pack/assets/minecraft/items");
+    fs.mkdirSync("./skin-pack/assets/trusted_skin_pack");
+    fs.mkdirSync("./skin-pack/assets/trusted_skin_pack/models");
+    fs.mkdirSync("./skin-pack/assets/trusted_skin_pack/models/item");
+    fs.mkdirSync("./skin-pack/assets/trusted_skin_pack/textures");
+    fs.mkdirSync("./skin-pack/assets/trusted_skin_pack/textures/item");
 }
 
 function copyJsonFile(format, username){
-    switch(format){
-        case "slim":
-            fs.copyFileSync("slim.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json")
-            let file = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json");
-            file = file.toString().replace("player", username)
-            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_slim.json", file)
-            break;
-        case "normal":
-            fs.copyFileSync("normal.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json")
-            let file2 = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json");
-            file2 = file2.toString().replace("player", username)
-            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_normal.json", file2)
-            break;
-        case "wierd":
-            fs.copyFileSync("old.json","./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json")
-            let file3 = fs.readFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json");
-            file3 = file3.toString().replace("player", username)
-            fs.writeFileSync("./skin-pack/assets/minecraft/optifine/cit/skins/"+username+"_old.json", file3)
-            break
-
-    }
-
+    const model_path = `./skin-pack/assets/trusted_skin_pack/models/item/${username}.json`;
+    fs.copyFileSync(`${format}.json`, model_path)
+    let file = fs.readFileSync(model_path);
+    file = file.toString().replace("./player", "trusted_skin_pack:item/"+username)
+    fs.writeFileSync(model_path, file)
 }
 
 
