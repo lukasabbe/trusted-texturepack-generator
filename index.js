@@ -124,6 +124,7 @@ function copyJsonFile(format, username){
     fs.copyFileSync(`${format}.json`, model_path)
     let file = fs.readFileSync(model_path);
     file = file.toString().replace("./player", "trusted_skin_pack:item/"+username)
+    file = file.replace("./player", "trusted_skin_pack:item/"+username)
     fs.writeFileSync(model_path, file)
 }
 
